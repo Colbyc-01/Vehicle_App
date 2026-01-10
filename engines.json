@@ -1,0 +1,1190 @@
+{
+  "_comment": "VERIFIED ENGINE SPECIFICATIONS ONLY",
+  "_note": "Only add engines with 100% verified specs from manufacturer documentation",
+  "honda_k20c1": {
+    "code": "honda_k20c1",
+    "make": "Honda",
+    "displacement": "2.0L",
+    "configuration": "Turbo I4",
+    "oil": {
+      "viscosity": "0W-20",
+      "capacity": "5.7 quarts",
+      "capacity_with_filter": "6.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-RTA-003",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-5AA-A00",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-5032"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA11921"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK 9807B-5617W",
+      "gap": "0.028-0.032 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_l15b7": {
+    "code": "honda_l15b7",
+    "make": "Honda",
+    "displacement": "1.5L",
+    "configuration": "Turbo I4",
+    "oil": {
+      "viscosity": "0W-20",
+      "capacity": "3.7 quarts",
+      "capacity_with_filter": "4.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-PLM-A02",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-5AA-A00",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-5032"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK DILKAR8A8",
+      "gap": "0.028-0.031 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "toyota_2ar_fe": {
+    "code": "toyota_2ar_fe",
+    "make": "Toyota",
+    "displacement": "2.5L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "0W-20",
+      "capacity": "4.6 quarts",
+      "capacity_with_filter": "4.8 quarts"
+    },
+    "oil_filter": {
+      "brand": "Toyota OEM",
+      "part_number": "04152-YZZA6",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Toyota OEM",
+      "part_number": "17801-0P051",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2381"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10467"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Denso K20TT",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "ford_coyote_50": {
+    "code": "ford_coyote_50",
+    "make": "Ford",
+    "displacement": "5.0L",
+    "configuration": "V8",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "7.7 quarts",
+      "capacity_with_filter": "8.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FL-500S",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        },
+        {
+          "brand": "K&N",
+          "part_number": "HP-2009"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FA-1927",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-5017"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA11208"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Motorcraft SP-546",
+      "gap": "0.052-0.056 inches",
+      "torque": "11 ft-lbs",
+      "quantity": 8
+    }
+  },
+  "toyota_2gr_fe": {
+    "code": "toyota_2gr_fe",
+    "make": "Toyota",
+    "displacement": "3.5L",
+    "configuration": "V6",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "5.5 quarts",
+      "capacity_with_filter": "6.4 quarts"
+    },
+    "oil_filter": {
+      "brand": "Toyota OEM",
+      "part_number": "90915-YZZF2",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Toyota OEM",
+      "part_number": "17801-31140",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2326"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Denso SK20R11",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 6
+    }
+  },
+  "ford_ecoboost_23": {
+    "code": "ford_ecoboost_23",
+    "make": "Ford",
+    "displacement": "2.3L",
+    "configuration": "EcoBoost Turbo I4",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "5.7 quarts",
+      "capacity_with_filter": "6.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FL-910S",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG10575"
+        },
+        {
+          "brand": "K&N",
+          "part_number": "HP-2011"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FA-1927",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-5017"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Motorcraft SP-520",
+      "gap": "0.030-0.034 inches",
+      "torque": "11 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "chevy_ls3": {
+    "code": "chevy_ls3",
+    "make": "Chevrolet",
+    "displacement": "6.2L",
+    "configuration": "V8",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "7.0 quarts",
+      "capacity_with_filter": "7.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "ACDelco",
+      "part_number": "PF48",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "HP-1017"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "XG3600"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "ACDelco",
+      "part_number": "A3137C",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2304"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "ACDelco 41-962",
+      "gap": "0.040 inches",
+      "torque": "11 ft-lbs",
+      "quantity": 8
+    }
+  },
+  "chevy_lt1": {
+    "code": "chevy_lt1",
+    "make": "Chevrolet",
+    "displacement": "6.2L",
+    "configuration": "V8",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "7.5 quarts",
+      "capacity_with_filter": "8.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "ACDelco",
+      "part_number": "PF63E",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "HP-1017"
+        },
+        {
+          "brand": "Mobil 1",
+          "part_number": "M1-110A"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "ACDelco",
+      "part_number": "A3201C",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-5007"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "ACDelco 41-114",
+      "gap": "0.035 inches",
+      "torque": "11 ft-lbs",
+      "quantity": 8
+    }
+  },
+  "chevy_ecotec_15t": {
+    "code": "chevy_ecotec_15t",
+    "make": "Chevrolet",
+    "displacement": "1.5L",
+    "configuration": "Turbo I4",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "4.2 quarts",
+      "capacity_with_filter": "4.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "ACDelco",
+      "part_number": "PF2257G",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG10575"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L25288"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "ACDelco",
+      "part_number": "A3259C",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-5028"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "ACDelco 41-110",
+      "gap": "0.035 inches",
+      "torque": "15 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_j35": {
+    "code": "honda_j35",
+    "make": "Honda",
+    "displacement": "3.5L",
+    "configuration": "V6",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "4.2 quarts",
+      "capacity_with_filter": "4.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-RTA-003",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-RCA-A00",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2326"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK IZKR7B",
+      "gap": "0.039-0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 6
+    }
+  },
+  "ford_ecoboost_35": {
+    "code": "ford_ecoboost_35",
+    "make": "Ford",
+    "displacement": "3.5L",
+    "configuration": "EcoBoost Twin-Turbo V6",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "6.0 quarts",
+      "capacity_with_filter": "6.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FL-910S",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG10575"
+        },
+        {
+          "brand": "K&N",
+          "part_number": "HP-2011"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FA-1927",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2385"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Motorcraft SP-520",
+      "gap": "0.030-0.034 inches",
+      "torque": "11 ft-lbs",
+      "quantity": 6
+    }
+  },
+  "nissan_vq35de": {
+    "code": "nissan_vq35de",
+    "make": "Nissan",
+    "displacement": "3.5L",
+    "configuration": "V6",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "4.5 quarts",
+      "capacity_with_filter": "5.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "Nissan OEM",
+      "part_number": "15208-65F0A",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH3593A"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L14670"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Nissan OEM",
+      "part_number": "16546-JA00A",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2031-2"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK PZFR5F-11",
+      "gap": "0.043 inches",
+      "torque": "14-22 ft-lbs",
+      "quantity": 6
+    }
+  },
+  "chevy_53_v8": {
+    "code": "chevy_53_v8",
+    "make": "Chevrolet",
+    "displacement": "5.3L",
+    "configuration": "V8",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "6.0 quarts",
+      "capacity_with_filter": "6.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "ACDelco",
+      "part_number": "PF48",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "HP-1017"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "XG3600"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "ACDelco",
+      "part_number": "A3137C",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2129"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "ACDelco 41-162",
+      "gap": "0.040 inches",
+      "torque": "11 ft-lbs",
+      "quantity": 8
+    }
+  },
+  "toyota_2zr_fe": {
+    "code": "toyota_2zr_fe",
+    "make": "Toyota",
+    "displacement": "1.8L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "0W-20",
+      "capacity": "4.4 quarts",
+      "capacity_with_filter": "4.6 quarts"
+    },
+    "oil_filter": {
+      "brand": "Toyota OEM",
+      "part_number": "04152-YZZA6",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Toyota OEM",
+      "part_number": "17801-YZZ02",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2326"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Denso FK20HBR8",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_d17a": {
+    "code": "honda_d17a",
+    "make": "Honda",
+    "displacement": "1.7L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "3.5 quarts",
+      "capacity_with_filter": "3.7 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-PLM-A02",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH3614"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "ML16811"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3323"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-PCX-004",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2276"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA9997"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK IZFR6K13",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_r18a": {
+    "code": "honda_r18a",
+    "make": "Honda",
+    "displacement": "1.8L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "3.9 quarts",
+      "capacity_with_filter": "4.4 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-RTA-003",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-RNA-A00",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2402"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10467"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK IZFR6K13",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_k20": {
+    "code": "honda_k20",
+    "make": "Honda",
+    "displacement": "2.0L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "4.2 quarts",
+      "capacity_with_filter": "4.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-PLM-A02",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH3614"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "ML16811"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3323"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-RTA-000",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2304"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10413"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK IZFR6K13",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_k24": {
+    "code": "honda_k24",
+    "make": "Honda",
+    "displacement": "2.4L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "4.2 quarts",
+      "capacity_with_filter": "4.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-PLM-A02",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH3614"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "ML16811"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3323"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-RTA-000",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2304"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10413"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK IZFR6K13",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_f22a": {
+    "code": "honda_f22a",
+    "make": "Honda",
+    "displacement": "2.2L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "4.0 quarts",
+      "capacity_with_filter": "4.3 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-PLM-A02",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH3614"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "ML16811"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3323"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-P0A-A00",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2120"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA8755"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK ZFR5F-11",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_f23a": {
+    "code": "honda_f23a",
+    "make": "Honda",
+    "displacement": "2.3L",
+    "configuration": "I4",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "4.0 quarts",
+      "capacity_with_filter": "4.3 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-PLM-A02",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH3614"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "ML16811"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3323"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-P0A-A00",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2120"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA8755"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK ZFR5F-11",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "honda_j30a": {
+    "code": "honda_j30a",
+    "make": "Honda",
+    "displacement": "3.0L",
+    "configuration": "V6",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "4.2 quarts",
+      "capacity_with_filter": "4.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "Honda OEM",
+      "part_number": "15400-RTA-003",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L15313"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Honda OEM",
+      "part_number": "17220-RCA-A00",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2276"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA8911"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK IZFR5K13",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 6
+    }
+  },
+  "ram_57_hemi": {
+    "code": "ram_57_hemi",
+    "make": "Ram/Dodge/Chrysler",
+    "displacement": "5.7L",
+    "configuration": "HEMI V8",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "6.5 quarts",
+      "capacity_with_filter": "7.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "Mopar",
+      "part_number": "68191349AA",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH16"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L25288"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Mopar",
+      "part_number": "53034051AA",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2247"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10261"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Champion RC12YC or Mopar 68303682AA",
+      "gap": "0.043 inches",
+      "torque": "13 ft-lbs",
+      "quantity": 16
+    }
+  },
+  "subaru_ej25": {
+    "code": "subaru_ej25",
+    "make": "Subaru",
+    "displacement": "2.5L",
+    "configuration": "H4 (Boxer)",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "4.2 quarts",
+      "capacity_with_filter": "4.5 quarts"
+    },
+    "oil_filter": {
+      "brand": "Subaru OEM",
+      "part_number": "15208AA15A",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "XG7317"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L14610"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Subaru OEM",
+      "part_number": "16546AA12A",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2304"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10467"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "NGK ILFR5B11 or Subaru 22401AA631",
+      "gap": "0.043 inches",
+      "torque": "14 ft-lbs",
+      "quantity": 4
+    }
+  },
+  "gm_36_v6": {
+    "code": "gm_36_v6",
+    "make": "GM (Chevrolet/GMC/Buick/Cadillac)",
+    "displacement": "3.6L",
+    "configuration": "V6",
+    "oil": {
+      "viscosity": "5W-30",
+      "capacity": "5.5 quarts",
+      "capacity_with_filter": "6.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "ACDelco",
+      "part_number": "PF48",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH9688"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L25288"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "ACDelco",
+      "part_number": "A3137C",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2454"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10650"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "ACDelco 41-162",
+      "gap": "0.043 inches",
+      "torque": "15 ft-lbs",
+      "quantity": 6
+    }
+  },
+  "ford_modular_46": {
+    "code": "ford_modular_46",
+    "make": "Ford/Lincoln/Mercury",
+    "displacement": "4.6L",
+    "configuration": "V8",
+    "oil": {
+      "viscosity": "5W-20",
+      "capacity": "5.5 quarts",
+      "capacity_with_filter": "6.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FL-820S",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH3614"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L25288"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3323"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "Motorcraft",
+      "part_number": "FA-1883",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2247"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA8755"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "Motorcraft SP-493 or SP-515",
+      "gap": "0.052-0.056 inches",
+      "torque": "11 ft-lbs",
+      "quantity": 8
+    }
+  },
+  "chevy_62_v8": {
+    "code": "chevy_62_v8",
+    "make": "Chevrolet/GMC/Cadillac",
+    "displacement": "6.2L",
+    "configuration": "V8",
+    "oil": {
+      "viscosity": "0W-20 or 5W-30",
+      "capacity": "7.5 quarts",
+      "capacity_with_filter": "8.0 quarts"
+    },
+    "oil_filter": {
+      "brand": "ACDelco",
+      "part_number": "PF48",
+      "alternatives": [
+        {
+          "brand": "Fram",
+          "part_number": "PH9688"
+        },
+        {
+          "brand": "Purolator",
+          "part_number": "L25288"
+        },
+        {
+          "brand": "Bosch",
+          "part_number": "3330"
+        }
+      ]
+    },
+    "air_filter": {
+      "brand": "ACDelco",
+      "part_number": "A3137C",
+      "alternatives": [
+        {
+          "brand": "K&N",
+          "part_number": "33-2454"
+        },
+        {
+          "brand": "Fram",
+          "part_number": "CA10650"
+        }
+      ]
+    },
+    "spark_plugs": {
+      "part_number": "ACDelco 41-162",
+      "gap": "0.040 inches",
+      "torque": "15 ft-lbs",
+      "quantity": 8
+    }
+  }
+}
