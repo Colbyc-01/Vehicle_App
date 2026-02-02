@@ -218,10 +218,6 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
 
     engineOptions = _buildEngineOptions(res['results']);
 
-    // Auto-flow:
-    // - If exactly 1 engine option, auto-load bundle (current behavior).
-    // - If multiple engine options, immediately prompt the user to pick an engine.
-    //   Cancel is allowed (no selection is applied).
     if (engineOptions.length == 1 && vehicleId != null) {
       selectedEngine = engineOptions.first;
       bundle = await svc.maintenanceBundle(
@@ -230,22 +226,6 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
         engineCode: selectedEngine!['code'],
       );
       await _saveLastSelection();
-    } else if (engineOptions.length > 1 && mounted) {
-      // Stop the spinner before showing the sheet so UI feels responsive.
-      setState(() => loading = false);
-
-      final picked = await _pickFromBottomSheet<Map<String, String>>(
-        title: 'Select Engine',
-        items: engineOptions,
-        labelOf: _engineOptionLabel,
-        searchHint: 'Search engines…',
-      );
-
-      if (picked != null) {
-        await _loadBundle(picked);
-      }
-
-      return;
     }
 
     setState(() => loading = false);
@@ -352,31 +332,78 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
         return;
       }
 
-      // If VIN maps to multiple catalog vehicles (eg Silverado family), ask user which one
-      if ((status == 'AMBIGUOUS' || status == 'NEEDS_VEHICLE_CONFIRMATION') && vehicleCandidates != null && vehicleCandidates.isNotEmpty) {
-        final picked = await _pickFromBottomSheet<Map<String, dynamic>>(
-          title: 'Select Vehicle',
-          items: vehicleCandidates
-              .whereType<Map>()
-              .map((m) => m.cast<String, dynamic>())
-              .toList(),
-          labelOf: (v) {
-            final mk = (v['make'] ?? '').toString();
-            final md = (v['model'] ?? '').toString();
-            final y0 = (v['year_min'] ?? '').toString();
-            final y1 = (v['year_max'] ?? '').toString();
-            final yr = (y0.isNotEmpty && y1.isNotEmpty) ? '$y0–$y1' : '';
-            return yr.isEmpty ? '$mk $md' : '$mk $md ($yr)';
-          },
-          searchHint: 'Search models…',
-        );
+      // If VIN maps to multiple catalog vehicles (eg Silverado family), ask user which one.
+// We do this in two stages so the user knows which engine they'll get:
+//   1) pick the year-range (make/model + year_min/year_max)
+//   2) if multiple engine variants exist for that range, pick engine (engine_label)
+if ((status == 'AMBIGUOUS' || status == 'NEEDS_VEHICLE_CONFIRMATION') &&
+    vehicleCandidates != null &&
+    vehicleCandidates.isNotEmpty) {
 
-        if (picked != null) {
-          applyVehicle(picked);
-        }
-      } else if (vehicle != null) {
-        applyVehicle(vehicle);
+  final cands = vehicleCandidates
+      .whereType<Map>()
+      .map((m) => m.cast<String, dynamic>())
+      .toList();
+
+  // Group by make/model + year range so we don't force the user to guess the engine.
+  final Map<String, List<Map<String, dynamic>>> groups = {};
+  for (final v in cands) {
+    final mk = (v['make'] ?? '').toString();
+    final md = (v['model'] ?? '').toString();
+    final y0 = (v['year_min'] ?? '').toString();
+    final y1 = (v['year_max'] ?? '').toString();
+    final key = '$mk|$md|$y0|$y1';
+    (groups[key] ??= []).add(v);
+  }
+
+  // Stage 1: pick range
+  final groupKeys = groups.keys.toList();
+  final pickedKey = await _pickFromBottomSheet<String>(
+    title: 'Select Vehicle',
+    items: groupKeys,
+    labelOf: (k) {
+      final parts = k.split('|');
+      final mk = parts.length > 0 ? parts[0] : '';
+      final md = parts.length > 1 ? parts[1] : '';
+      final y0 = parts.length > 2 ? parts[2] : '';
+      final y1 = parts.length > 3 ? parts[3] : '';
+      final yr = (y0.isNotEmpty && y1.isNotEmpty) ? '$y0–$y1' : '';
+      return yr.isEmpty ? '$mk $md' : '$mk $md ($yr)';
+    },
+    searchHint: 'Search vehicles…',
+  );
+
+  if (pickedKey != null) {
+    final variants = groups[pickedKey] ?? const <Map<String, dynamic>>[];
+
+    if (variants.length <= 1) {
+      // Only one engine variant for this range; apply directly.
+      applyVehicle(variants.first);
+    } else {
+      // Stage 2: pick engine variant (keeps vehicle_id correct)
+      final pickedVariant = await _pickFromBottomSheet<Map<String, dynamic>>(
+        title: 'Select Engine',
+        items: variants,
+        labelOf: (v) {
+          final engNames = (v['engine_names'] as List?)?.cast<dynamic>();
+          final eng = (engNames != null && engNames.isNotEmpty)
+              ? engNames.first.toString()
+              : (v['engine_label'] ?? '').toString();
+          final mk = (v['make'] ?? '').toString();
+          final md = (v['model'] ?? '').toString();
+          return eng.isNotEmpty ? eng : '$mk $md';
+        },
+        searchHint: 'Search engines…',
+      );
+
+      if (pickedVariant != null) {
+        applyVehicle(pickedVariant);
       }
+    }
+  }
+} else if (vehicle != null) {
+  applyVehicle(vehicle);
+}
 
       // If we have engine choices from backend (ambiguous engines), ask user
       if ((status == 'NEEDS_ENGINE_CONFIRMATION' || status == 'AMBIGUOUS') && engineChoices != null && engineChoices.isNotEmpty) {

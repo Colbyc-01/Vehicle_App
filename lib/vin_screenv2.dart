@@ -218,10 +218,6 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
 
     engineOptions = _buildEngineOptions(res['results']);
 
-    // Auto-flow:
-    // - If exactly 1 engine option, auto-load bundle (current behavior).
-    // - If multiple engine options, immediately prompt the user to pick an engine.
-    //   Cancel is allowed (no selection is applied).
     if (engineOptions.length == 1 && vehicleId != null) {
       selectedEngine = engineOptions.first;
       bundle = await svc.maintenanceBundle(
@@ -230,22 +226,6 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
         engineCode: selectedEngine!['code'],
       );
       await _saveLastSelection();
-    } else if (engineOptions.length > 1 && mounted) {
-      // Stop the spinner before showing the sheet so UI feels responsive.
-      setState(() => loading = false);
-
-      final picked = await _pickFromBottomSheet<Map<String, String>>(
-        title: 'Select Engine',
-        items: engineOptions,
-        labelOf: _engineOptionLabel,
-        searchHint: 'Search engines…',
-      );
-
-      if (picked != null) {
-        await _loadBundle(picked);
-      }
-
-      return;
     }
 
     setState(() => loading = false);

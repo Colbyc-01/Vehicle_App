@@ -11,6 +11,7 @@ class ScanVinScreen extends StatefulWidget {
 
 class _ScanVinScreenState extends State<ScanVinScreen> {
   bool _found = false;
+  bool _success = false;
   bool _torchOn = false;
 
   late final MobileScannerController _controller;
@@ -68,14 +69,19 @@ class _ScanVinScreenState extends State<ScanVinScreen> {
               if (vin == null) return;
 
               _found = true;
+              // Flash the box green on success
+              if (mounted) {
+                setState(() => _success = true);
+              }
 
               // Haptics are best-effort (depends on device vibration settings).
               try {
-                HapticFeedback.selectionClick();
+                HapticFeedback.heavyImpact();
+                HapticFeedback.vibrate();
               } catch (_) {}
 
               // Tiny delay so the user perceives "success"
-              await Future.delayed(const Duration(milliseconds: 200));
+              await Future.delayed(const Duration(milliseconds: 250));
               if (!mounted) return;
               Navigator.pop(context, vin);
             },
@@ -95,7 +101,10 @@ class _ScanVinScreenState extends State<ScanVinScreen> {
                 width: 280,
                 height: 160,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
+            border: Border.all(
+              color: _success ? Colors.greenAccent : Colors.white,
+              width: 2,
+            ),
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),

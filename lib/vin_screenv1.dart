@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 import 'vin_service.dart';
@@ -51,24 +50,7 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
     super.initState();
     svc = VinService(widget.api);
     _boot();
-  }Future<void> _openExternal(String url) async {
-  try {
-    final uri = Uri.parse(url);
-    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!ok && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open link')),
-      );
-    }
-  } catch (_) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open link')),
-      );
-    }
   }
-}
-
 
   Future<void> _boot() async {
     await _loadYears();
@@ -218,10 +200,6 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
 
     engineOptions = _buildEngineOptions(res['results']);
 
-    // Auto-flow:
-    // - If exactly 1 engine option, auto-load bundle (current behavior).
-    // - If multiple engine options, immediately prompt the user to pick an engine.
-    //   Cancel is allowed (no selection is applied).
     if (engineOptions.length == 1 && vehicleId != null) {
       selectedEngine = engineOptions.first;
       bundle = await svc.maintenanceBundle(
@@ -230,22 +208,6 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
         engineCode: selectedEngine!['code'],
       );
       await _saveLastSelection();
-    } else if (engineOptions.length > 1 && mounted) {
-      // Stop the spinner before showing the sheet so UI feels responsive.
-      setState(() => loading = false);
-
-      final picked = await _pickFromBottomSheet<Map<String, String>>(
-        title: 'Select Engine',
-        items: engineOptions,
-        labelOf: _engineOptionLabel,
-        searchHint: 'Search engines…',
-      );
-
-      if (picked != null) {
-        await _loadBundle(picked);
-      }
-
-      return;
     }
 
     setState(() => loading = false);
@@ -474,128 +436,61 @@ List _sectionItems(dynamic section) {
   }
 
   Widget _expandCard({
-  required String title,
-  required IconData icon,
-  required dynamic section,
-  String? subtitle,
-}) {
-  final warning = _sectionWarning(section);
-  final labels = _labels(section);
-  final hasVerified = _sectionHasVerified(section);
+    required String title,
+    required IconData icon,
+    required dynamic section,
+    String? subtitle,
+  }) {
+    final warning = _sectionWarning(section);
+    final labels = _labels(section);
+    final hasVerified = _sectionHasVerified(section);
 
-  // Oil filter special schema:
-  // section: { engine_code, oil_filter: { oem: {...buy_links}, alternatives: [...] } }
-  final oilFilter = (section is Map) ? section['oil_filter'] : null;
-  final oem = (oilFilter is Map) ? oilFilter['oem'] : null;
-  final altParts = (oilFilter is Map && oilFilter['alternatives'] is List)
-      ? oilFilter['alternatives'] as List
-      : const [];
+    // Primary + alternatives:
+    final primary = labels.isNotEmpty ? labels.first : null;
+    final alts = labels.length > 1 ? labels.sublist(1) : const <String>[];
 
-  String partLabel(Map p) {
-    final lbl = p['label']?.toString();
-    if (lbl != null && lbl.isNotEmpty) return lbl;
-    final brand = p['brand']?.toString() ?? '';
-    final pn = p['part_number']?.toString() ?? '';
-    final combo = [brand, pn].where((s) => s.trim().isNotEmpty).join(' ');
-    return combo.isNotEmpty ? combo : p.toString();
-  }
-
-  Widget buyButtons(Map p) {
-    final links = (p['buy_links'] as Map?)?.cast<String, dynamic>() ?? {};
-    final amazon = links['amazon']?.toString();
-    final ebay = links['ebay']?.toString();
-
-    if (amazon == null && ebay == null) return const SizedBox.shrink();
-
-    return Wrap(
-      spacing: 10,
-      runSpacing: 8,
-      children: [
-        if (amazon != null)
-          ElevatedButton(
-            onPressed: () => _openExternal(amazon),
-            child: const Text('Buy on Amazon'),
-          ),
-        if (ebay != null)
-          OutlinedButton(
-            onPressed: () => _openExternal(ebay),
-            child: const Text('Buy on eBay'),
-          ),
-      ],
-    );
-  }
-
-  // Primary + alternatives (generic label-only fallback)
-  final primary = labels.isNotEmpty ? labels.first : null;
-  final alts = labels.length > 1 ? labels.sublist(1) : const <String>[];
-
-  return Card(
-    margin: const EdgeInsets.only(top: 12),
-    child: ExpansionTile(
-      tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-      leading: Icon(icon),
-      title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-      subtitle: subtitle == null || subtitle.isEmpty ? null : Text(subtitle),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+    return Card(
+      margin: const EdgeInsets.only(top: 12),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+        leading: Icon(icon),
+        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        subtitle: subtitle == null || subtitle.isEmpty ? null : Text(subtitle),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (hasVerified) _badge(text: "Verified"),
+            const SizedBox(width: 8),
+            const Icon(Icons.expand_more),
+          ],
+        ),
         children: [
-          if (hasVerified) _badge(text: "Verified"),
-          const SizedBox(width: 8),
-          const Icon(Icons.expand_more),
+          if (warning != null && warning.isNotEmpty) ...[
+            Text(warning, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: 10),
+          ],
+          if (primary == null) ...[
+            Text(_emptyCopy),
+          ] else ...[
+            Text("Primary", style: Theme.of(context).textTheme.labelLarge),
+            const SizedBox(height: 6),
+            Text(primary),
+            if (alts.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text("Recommended alternatives",
+                  style: Theme.of(context).textTheme.labelLarge),
+              const SizedBox(height: 6),
+              ...alts.map((a) => Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text("• $a"),
+                  )),
+            ],
+          ],
         ],
       ),
-      children: [
-        if (warning != null && warning.isNotEmpty) ...[
-          Text(warning, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 10),
-        ],
-
-        // Oil Filter: render with buy links if present
-        if (oem is Map) ...[
-          Text("Primary", style: Theme.of(context).textTheme.labelLarge),
-          const SizedBox(height: 6),
-          Text(partLabel(oem.cast<String, dynamic>())),
-          const SizedBox(height: 8),
-          buyButtons(oem.cast<String, dynamic>()),
-
-          if (altParts.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text("Recommended alternatives",
-                style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 6),
-            for (final a in altParts)
-              if (a is Map) ...[
-                Text("• ${partLabel(a.cast<String, dynamic>())}"),
-                const SizedBox(height: 6),
-                Padding(
-                  padding: const EdgeInsets.only(left: 14),
-                  child: buyButtons(a.cast<String, dynamic>()),
-                ),
-                const SizedBox(height: 8),
-              ],
-          ],
-        ] else if (primary == null) ...[
-          Text(_emptyCopy),
-        ] else ...[
-          Text("Primary", style: Theme.of(context).textTheme.labelLarge),
-          const SizedBox(height: 6),
-          Text(primary),
-          if (alts.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text("Recommended alternatives",
-                style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 6),
-            ...alts.map((a) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Text("• $a"),
-                )),
-          ],
-        ],
-      ],
-    ),
-  );
-}
+    );
+  }
 
   Future<T?> _pickFromBottomSheet<T>({
     required String title,
@@ -647,7 +542,6 @@ List _sectionItems(dynamic section) {
                     height: MediaQuery.of(ctx).size.height * 0.55,
                     child: ListView.separated(
                       itemCount: filtered.length,
-                      // ignore: unnecessary_underscores
                       separatorBuilder: (_, __) => const Divider(height: 1),
                       itemBuilder: (ctx, i) {
                         final it = filtered[i];
@@ -702,6 +596,7 @@ List _sectionItems(dynamic section) {
   @override
   Widget build(BuildContext context) {
     final oil = bundle?['oil_change'];
+    final oilParts = oil?['oil_parts'];
     final selectedYearText = year?.toString() ?? '';
     final selectedMakeText = make ?? '';
     final selectedModelText = model ?? '';

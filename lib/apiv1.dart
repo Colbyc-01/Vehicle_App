@@ -68,10 +68,11 @@ class ApiClient {
     final json = await postJson('/vin/resolve_and_bundle', {'vin': vin});
     return (json as Map).cast<String, dynamic>();
   }
+
   Future<List<String>> getModels(int year, String make) async {
-    final data = await getJson('/models', query: {'year': year, 'make': make});
-    return List<String>.from(data);
-  }
+  final data = await postJson('/models?year=$year&make=$make', {});
+  return List<String>.from(data['models']);
+}
 
 }
 

@@ -522,6 +522,7 @@ List _sectionItems(dynamic section) {
                     height: MediaQuery.of(ctx).size.height * 0.55,
                     child: ListView.separated(
                       itemCount: filtered.length,
+                      // ignore: unnecessary_underscores
                       separatorBuilder: (_, __) => const Divider(height: 1),
                       itemBuilder: (ctx, i) {
                         final it = filtered[i];
