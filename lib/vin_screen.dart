@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
+import 'garage_service.dart';
 import 'vin_service.dart';
 import 'scan_vin_screen.dart';
 
 class VinFlowScreen extends StatefulWidget {
   final ApiClient api;
-  const VinFlowScreen({super.key, required this.api});
+  final String? presetVin;
+
+  const VinFlowScreen({
+    super.key,
+    required this.api,
+    this.presetVin,
+  });
 
   @override
   State<VinFlowScreen> createState() => _VinFlowScreenState();
@@ -49,9 +56,23 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Prefill VIN when launched from Garage.
+    if (widget.presetVin != null && widget.presetVin!.trim().isNotEmpty) {
+      vinCtrl.text = widget.presetVin!.trim().toUpperCase();
+    }
+
     svc = VinService(widget.api);
     _boot();
-  }Future<void> _openExternal(String url) async {
+    // If we were launched with a VIN, auto-resolve after first frame.
+    if (vinCtrl.text.trim().isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _resolveVin();
+      });
+    }
+  }
+
+  Future<void> _openExternal(String url) async {
   try {
     final uri = Uri.parse(url);
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -105,10 +126,44 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
     return out;
   }
 
+  String _engineAliasFromCode(String code) {
+    // Example: FORD_Coyote50 -> Coyote
+    if (code.isEmpty) return '';
+    var raw = code;
+    final idx = code.indexOf('_');
+    if (idx >= 0 && idx + 1 < code.length) {
+      raw = code.substring(idx + 1);
+    }
+    raw = raw.replaceAll('_', ' ').trim();
+    if (raw.isEmpty) return '';
+
+    // Strip tiny trailing displacement-like suffixes (e.g., Coyote50 -> Coyote).
+    final m = RegExp(r'^([A-Za-z]{4,})(\d{1,2})$').firstMatch(raw);
+    if (m != null) {
+      return m.group(1) ?? raw;
+    }
+    return raw;
+  }
+
   String _engineOptionLabel(Map<String, String> opt) {
-    final l = opt['label'] ?? '';
-    final c = opt['code'] ?? '';
-    return l == c ? c : '$l ($c)';
+    final l = (opt['label'] ?? '').trim();
+    final c = (opt['code'] ?? '').trim();
+    final alias = _engineAliasFromCode(c);
+
+    // If backend label is missing or equals code, prefer alias (when it looks nicer).
+    final base = (l.isEmpty || l == c) ? (alias.isNotEmpty ? alias : c) : l;
+
+    // If we have both a nice base label and a distinct alias, show both.
+    final showAlias = alias.isNotEmpty &&
+        base.isNotEmpty &&
+        alias.toLowerCase() != base.toLowerCase() &&
+        !base.toLowerCase().contains(alias.toLowerCase());
+
+    if (showAlias) {
+      return '$base — $alias ($c)';
+    }
+    if (base == c) return c;
+    return '$base ($c)';
   }
 
   Future<void> _saveLastSelection() async {
@@ -329,22 +384,30 @@ class _VinFlowScreenState extends State<VinFlowScreen> {
 
 
       // If backend returned everything in one shot, we're done.
-      if (status == 'READY') {
-        if (vehicle != null) {
-          applyVehicle(vehicle);
-        }
-        final ec = res['engine_code']?.toString();
-        if (ec != null && ec.isNotEmpty) {
-          selectedEngine = {'code': ec, 'label': ec};
-        }
-        final b = (res['bundle'] as Map?)?.cast<String, dynamic>();
-        if (b != null) {
-          bundle = b;
-        }
-        await _saveLastSelection();
-        setState(() {});
-        return;
-      }
+    if (status == 'READY') {
+     if (vehicle != null) {
+       applyVehicle(vehicle);
+     }
+
+      final ec = res['engine_code']?.toString();
+     final en = res['engine_name']?.toString();   // <-- ADD THIS
+
+    if (ec != null && ec.isNotEmpty) {
+    selectedEngine = {
+      'code': ec,
+      'label': (en != null && en.isNotEmpty) ? en : ec,   // <-- USE engine_name
+    };
+  }
+
+  final b = (res['bundle'] as Map?)?.cast<String, dynamic>();
+  if (b != null) {
+    bundle = b;
+  }
+
+  await _saveLastSelection();
+  setState(() {});
+  return;
+}
 
       // If VIN didn't map to catalog, leave user in manual picker mode (no dead end)
       if (status == 'UNSUPPORTED') {
@@ -709,6 +772,7 @@ List _sectionItems(dynamic section) {
         selectedEngine == null ? '' : _engineOptionLabel(selectedEngine!);
 
     return Scaffold(
+      appBar: AppBar(title: const Text('Vin')),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16),
@@ -749,6 +813,21 @@ TextField(
                 ),
               ],
             ),
+            if (error != null)
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.redAccent.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.redAccent.withOpacity(0.35)),
+                ),
+                child: Text(
+                  error!,
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
             const SizedBox(height: 16),
 
             _pickerTile(
@@ -775,7 +854,13 @@ TextField(
                         bundle = null;
                         vehicleId = null;
                       });
-                      makes = await svc.makes(picked);
+                      try {
+                        makes = await svc.makes(picked);
+                        error = null;
+                      } catch (e) {
+                        makes = [];
+                        error = 'Could not load Makes.\n$e';
+                      }
                       setState(() {});
                     },
             ),
@@ -804,7 +889,13 @@ TextField(
                         bundle = null;
                         vehicleId = null;
                       });
-                      models = await svc.models(year!, picked);
+                      try {
+                        models = await svc.models(year!, picked);
+                        error = null;
+                      } catch (e) {
+                        models = [];
+                        error = 'Could not load Models.\n$e';
+                      }
                       setState(() {});
                     },
             ),
@@ -858,6 +949,36 @@ TextField(
 
             if (bundle != null) ...[
               const SizedBox(height: 14),
+
+              // Manual "Save to Garage" (user-confirmed)
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.star_border),
+                  label: const Text('Save to Garage'),
+                onPressed: () async {
+                  final vin = vinCtrl.text.trim().toUpperCase();
+                  final y = (year?.toString() ?? '').trim();
+                  final mk = (make ?? '').trim();
+                  final md = (model ?? '').trim();
+                  final eng = selectedEngineText.trim();
+
+                  final title = [y, mk, md].where((s) => s.isNotEmpty).join(' ');
+
+                  final stored = vin.isNotEmpty
+                  ? '$vin | $title | $eng'
+                  : 'MANUAL | $title | $eng';
+
+                  await GarageService.addVehicle(stored);
+
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Saved to Garage')),
+                    );
+                  }
+                },
+                ),
+              ),
 
               Card(
                 margin: const EdgeInsets.only(top: 12),
