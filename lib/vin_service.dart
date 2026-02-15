@@ -54,12 +54,12 @@ class VinService {
     required int year,
     String? engineCode,
   }) async {
-    final data = await api.getJson(
+    final data = await api.postJson(
       '/maintenance/bundle',
-      query: {
+      {
         'vehicle_id': vehicleId,
-        'year': year.toString(),
-        if (engineCode != null) 'engine_code': engineCode,
+        'year': year,
+        'engine_code': ?engineCode,
       },
     );
 

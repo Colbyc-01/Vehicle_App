@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vehicle_app/local/garage_repo.dart';
 
 import 'api.dart';
 import 'vin_screen.dart';
@@ -13,7 +15,7 @@ class GarageScreen extends StatefulWidget {
 }
 
 class _GarageScreenState extends State<GarageScreen> {
-  List<String> vehicles = [];
+  List<Map<String, Object?>> vehicles = [];
 
   @override
   void initState() {
@@ -21,64 +23,45 @@ class _GarageScreenState extends State<GarageScreen> {
     loadGarage();
   }
 
-  Future<void> loadGarage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final list = prefs.getStringList('garage_list') ?? [];
-    setState(() => vehicles = list);
-  }
+Future<void> loadGarage() async {
+  final repo = GarageRepo();
+  final rows = await repo.listVehicles();
+
+  if (!mounted) return;
+
+  setState(() {
+    vehicles = rows;
+  });
+}
 
   /// Stored format (v1): "VIN|year make model|engine"
   /// Example: "3C6...|2012 RAM 2500|6.7L I6"
   /// VIN may be empty.
-({String vin, String title, String engine}) _parse(String raw) {
-  final parts = raw.split('|');
 
-  String vin = '';
-  String title = '';
-  String engine = '';
-
-  if (parts.isNotEmpty) {
-    final candidate = parts[0].trim().toUpperCase();
-
-    // Real VIN check (17 chars, no I/O/Q)
-    final vinRegex = RegExp(r'^[A-HJ-NPR-Z0-9]{17}$');
-
-    if (vinRegex.hasMatch(candidate)) {
-      vin = candidate;
-      title = parts.length > 1 ? parts[1].trim() : '';
-      engine = parts.length > 2 ? parts[2].trim() : '';
-    } else {
-      // Legacy / manual entries
-      title = raw.trim();
-    }
-  }
-
-  return (vin: vin, title: title, engine: engine);
-}
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-    appBar: AppBar(
-    title: const Text('Garage'),
-    actions: [
-    IconButton(
-      icon: const Icon(Icons.delete_forever),
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+      appBar: AppBar(
+        title: const Text('Garage'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_forever),
       onPressed: () async {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.remove('garage_list');
-        await loadGarage();
-         },
-        ),
-      ],
+        final repo = GarageRepo();
+        await repo.deleteAllVehicles();
+
+        await loadGarage(); // whatever your refresh is
+      },
     ),
+  ],
+),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => VinFlowScreen(api: widget.api),
+              builder: (_) => VinFlowScreen(api: widget.api, isAddFlow: true)
             ),
           );
           await loadGarage();
@@ -88,33 +71,43 @@ class _GarageScreenState extends State<GarageScreen> {
           ? const Center(child: Text('Garage empty'))
           : ListView.separated(
               itemCount: vehicles.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
+              separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (context, index) {
-                final raw = vehicles[index];
-                final parsed = _parse(raw);
+                final v = vehicles[index];
+                final yearStr = v['year']?.toString() ?? '';
+                final makeStr = v['make']?.toString() ?? '';
+                final modelStr = v['model']?.toString() ?? '';
+                final vinStr = v['vin']?.toString() ?? '';
+                final engineStr = v['engine_label']?.toString() ?? '';
+                final enginePreset = v['engine_code']?.toString() ?? '';
 
-                final title = parsed.engine.isNotEmpty
-                    ? '${parsed.title} ${parsed.engine}'.trim()
-                    : parsed.title;
+                final title = [
+                  yearStr, makeStr, modelStr,
+                  if (engineStr.isNotEmpty) '— $engineStr',
+                ].where((s) => s.isNotEmpty).join(' ');
 
-                return ListTile(
-                  title: Text(title),
-                  subtitle: parsed.vin.isNotEmpty ? Text(parsed.vin) : null,
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => VinFlowScreen(
-                          api: widget.api,
-                          presetVin: parsed.vin.isNotEmpty ? parsed.vin : null,
-                        ),
-                      ),
-                    );
-                    await loadGarage();
-                  },
-                );
+
+          return ListTile(
+            title: Text(title),
+            subtitle: vinStr.isNotEmpty ? Text(vinStr) : null,
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => VinFlowScreen(
+                    api: widget.api,
+                    presetVin: vinStr.isNotEmpty && vinStr != 'MANUAL' ? vinStr : null,
+                    presetEngineText: v['engine_label']?.toString(),
+                    presetEngineCode: enginePreset.isNotEmpty ? enginePreset : null,
+                  ),
+                ),
+              );
+              await loadGarage(); // refresh after returning
+            },
+            
+          );
               },
             ),
     );
-  }
+      }
 }

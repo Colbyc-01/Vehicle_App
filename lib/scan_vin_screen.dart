@@ -83,6 +83,7 @@ class _ScanVinScreenState extends State<ScanVinScreen> {
               // Tiny delay so the user perceives "success"
               await Future.delayed(const Duration(milliseconds: 250));
               if (!mounted) return;
+              // ignore: use_build_context_synchronously
               Navigator.pop(context, vin);
             },
           ),
@@ -90,6 +91,7 @@ class _ScanVinScreenState extends State<ScanVinScreen> {
           // Dark overlay (lets the target box stand out)
           Positioned.fill(
             child: IgnorePointer(
+              // ignore: deprecated_member_use
               child: Container(color: Colors.black.withOpacity(0.35)),
             ),
           ),
