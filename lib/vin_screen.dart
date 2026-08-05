@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 // ignore: unused_import
 import 'garage_service.dart';
+import 'maintenance_fitment.dart';
 import 'vin_service.dart';
 import 'scan_vin_screen.dart';
 import 'package:vehicle_app/local/garage_store.dart';
@@ -576,12 +577,51 @@ List _sectionItems(dynamic section) {
     }).toList();
   }
 
+  Widget _fitmentBadge(dynamic section) {
+    final state = maintenanceFitmentState(section);
+    if (state == MaintenanceFitmentState.unavailable) {
+      return const SizedBox.shrink();
+    }
+
+    final verified = state == MaintenanceFitmentState.verified;
+    final color = verified ? Colors.green : Colors.orange;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            verified ? Icons.verified_outlined : Icons.info_outline,
+            size: 14,
+            color: color,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            verified ? 'Verified' : 'Verify fitment',
+            style: TextStyle(fontSize: 12, color: color),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _expandCard({
   required String title,
   required IconData icon,
   required dynamic section,
   String? subtitle,
 }) {
+  final fitmentState = maintenanceFitmentState(section);
+  if (fitmentState == MaintenanceFitmentState.unavailable) {
+    return const SizedBox.shrink();
+  }
+
   final warning = _sectionWarning(section);
   final labels = _labels(section);
 
@@ -596,7 +636,9 @@ List _sectionItems(dynamic section) {
 
 
 Widget buyButtons(dynamic p) {
-  if (p is! Map) return const SizedBox.shrink();
+  if (p is! Map || !hasMaintenanceContent(p)) {
+    return const SizedBox.shrink();
+  }
 
   final links = (p['buy_links'] is Map)
       ? (p['buy_links'] as Map).cast<String, dynamic>()
@@ -653,6 +695,10 @@ final partContainer = (section is Map)
   final altParts = (partContainer is Map && partContainer['alternatives'] is List)
       ? partContainer['alternatives'] as List
       : const [];
+  final oemPart = oem is Map && hasMaintenanceContent(oem) ? oem : null;
+  final usableAltParts = altParts
+      .where((part) => part is Map && hasMaintenanceContent(part))
+      .toList();
 
 // Spark plug specific variables
 final isSpark = title.toLowerCase().contains('spark');
@@ -682,6 +728,7 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
+          _fitmentBadge(section),
         ],
       ),
       children: [
@@ -726,7 +773,7 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
           if ((entry.value as Map)['alternatives'] is List) ...[
             const SizedBox(height: 8),
             for (final a in ((entry.value as Map)['alternatives'] as List))
-              if (a is Map) ...[
+              if (a is Map && hasMaintenanceContent(a)) ...[
                 Text("• ${partLabel(a.cast<String, dynamic>())}"),
                 const SizedBox(height: 6),
                 Padding(
@@ -757,7 +804,16 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
       childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
       leading: Icon(icon),
       title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-      subtitle: subtitle == null || subtitle.isEmpty ? null : Text(subtitle),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (subtitle != null && subtitle.isNotEmpty) Text(subtitle),
+            _fitmentBadge(section),
+          ],
+        ),
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -777,35 +833,37 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
         ],
 
         // Parts: render with buy links if present
-        if (oem is Map) ...[
+        if (oemPart is Map) ...[
           Text("Primary", style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 6),
-          Text(partLabel(oem.cast<String, dynamic>())),
+          Text(partLabel(oemPart.cast<String, dynamic>())),
           const SizedBox(height: 8),
-          buyButtons(oem.cast<String, dynamic>()),
+          buyButtons(oemPart.cast<String, dynamic>()),
+        ],
 
-          if (altParts.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text("Recommended alternatives",
-                style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 6),
-            for (final a in altParts)
-              if (a is Map) ...[
-                Text("• ${partLabel(a.cast<String, dynamic>())}"),
-                const SizedBox(height: 6),
-                Padding(
-                  padding: const EdgeInsets.only(left: 14),
-                  child: buyButtons(a.cast<String, dynamic>()),
-                ),
-                const SizedBox(height: 8),
-              ],
-          ],
-        ] else if (primary == null) ...[
+        if (usableAltParts.isNotEmpty) ...[
+          if (oemPart is Map) const SizedBox(height: 12),
+          Text("Recommended alternatives",
+              style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 6),
+          for (final a in usableAltParts)
+            if (a is Map) ...[
+              Text("• ${partLabel(a.cast<String, dynamic>())}"),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.only(left: 14),
+                child: buyButtons(a.cast<String, dynamic>()),
+              ),
+              const SizedBox(height: 8),
+            ],
+        ],
+
+        if (oemPart is! Map && usableAltParts.isEmpty && primary == null) ...[
           Text(_emptyCopy),
-        ] else ...[
+        ] else if (oemPart is! Map && usableAltParts.isEmpty) ...[
           Text("Primary", style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 6),
-          Text(primary),
+          Text(primary!),
           if (alts.isNotEmpty) ...[
             const SizedBox(height: 12),
             Text("Recommended alternatives",
@@ -1177,8 +1235,25 @@ TextField(
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Text('Oil Spec: ${oil?['oil_spec']?['label']}'),
-                      Text('Capacity: ${oil?['oil_capacity']?['capacity_label_with_filter']}'),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text('Oil Spec: ${oil?['oil_spec']?['label']}'),
+                          _fitmentBadge(oil?['oil_spec']),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text('Capacity: ${oil?['oil_capacity']?['capacity_label_with_filter']}'),
+                          _fitmentBadge(oil?['oil_capacity']),
+                        ],
+                      ),
                       if (oil?['purchase_guidance']?['suggested'] != null)
                         Text(
                           'Buy plan: ${oil?['purchase_guidance']['suggested'].map((s) => "${s['count']}×${s['size_qt']}qt").join(" + ")} '
