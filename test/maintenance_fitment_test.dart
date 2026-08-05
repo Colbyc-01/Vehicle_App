@@ -38,10 +38,10 @@ void main() {
     expect(state, MaintenanceFitmentState.unavailable);
   });
 
-  test('hides unverified sections with placeholder primary parts', () {
+  test('hides sections with placeholder primary parts', () {
     final placeholder = {'brand': 'TBD', 'part_number': 'TBD'};
     final state = maintenanceFitmentState({
-      'verified': false,
+      'verified': true,
       'oem': placeholder,
       'alternatives': [
         {'brand': 'WIX', 'part_number': 'WA10855'},

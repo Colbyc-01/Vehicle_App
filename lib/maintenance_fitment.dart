@@ -63,7 +63,7 @@ bool hasMaintenanceContent(dynamic section) {
     return _isUsefulValue(section);
   }
 
-  if (section['verified'] == false && _hasPlaceholderPrimary(section)) {
+  if (_hasPlaceholderPrimary(section)) {
     return false;
   }
 
