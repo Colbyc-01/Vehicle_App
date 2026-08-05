@@ -63,6 +63,10 @@ bool hasMaintenanceContent(dynamic section) {
     return _isUsefulValue(section);
   }
 
+  if (section['verified'] == false && _hasPlaceholderPrimary(section)) {
+    return false;
+  }
+
   final positions = section['positions'];
   if (positions is Map && positions.values.any(hasMaintenanceContent)) {
     return true;
@@ -103,6 +107,27 @@ bool hasMaintenanceContent(dynamic section) {
     return true;
   }
 
+  return false;
+}
+
+bool _hasPlaceholderPrimary(Map section) {
+  final containers = <dynamic>[section];
+  for (final key in const [
+    'oil_products',
+    'oil_filter',
+    'air_filter',
+    'cabin_filter',
+    'spark_plugs',
+  ]) {
+    if (section[key] is Map) containers.add(section[key]);
+  }
+
+  for (final container in containers.whereType<Map>()) {
+    final primary = container['oem'] ?? container['primary'];
+    if (primary is Map && !hasMaintenanceContent(primary)) {
+      return true;
+    }
+  }
   return false;
 }
 

@@ -38,7 +38,7 @@ void main() {
     expect(state, MaintenanceFitmentState.unavailable);
   });
 
-  test('keeps unverified sections when useful alternatives exist', () {
+  test('hides unverified sections with placeholder primary parts', () {
     final placeholder = {'brand': 'TBD', 'part_number': 'TBD'};
     final state = maintenanceFitmentState({
       'verified': false,
@@ -49,7 +49,7 @@ void main() {
     });
 
     expect(hasMaintenanceContent(placeholder), isFalse);
-    expect(state, MaintenanceFitmentState.verifyFitment);
+    expect(state, MaintenanceFitmentState.unavailable);
   });
 
   test('keeps covered wiper sections with position specifications', () {
