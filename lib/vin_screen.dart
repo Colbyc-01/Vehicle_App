@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 // ignore: unused_import
 import 'garage_service.dart';
+import 'maintenance_fitment.dart';
 import 'vin_service.dart';
 import 'scan_vin_screen.dart';
 import 'package:vehicle_app/local/garage_store.dart';
@@ -576,12 +577,51 @@ List _sectionItems(dynamic section) {
     }).toList();
   }
 
+  Widget _fitmentBadge(dynamic section) {
+    final state = maintenanceFitmentState(section);
+    if (state == MaintenanceFitmentState.unavailable) {
+      return const SizedBox.shrink();
+    }
+
+    final verified = state == MaintenanceFitmentState.verified;
+    final color = verified ? Colors.green : Colors.orange;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            verified ? Icons.verified_outlined : Icons.info_outline,
+            size: 14,
+            color: color,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            verified ? 'Verified' : 'Verify fitment',
+            style: TextStyle(fontSize: 12, color: color),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _expandCard({
   required String title,
   required IconData icon,
   required dynamic section,
   String? subtitle,
 }) {
+  final fitmentState = maintenanceFitmentState(section);
+  if (fitmentState == MaintenanceFitmentState.unavailable) {
+    return const SizedBox.shrink();
+  }
+
   final warning = _sectionWarning(section);
   final labels = _labels(section);
 
@@ -682,6 +722,7 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
+          _fitmentBadge(section),
         ],
       ),
       children: [
@@ -757,7 +798,16 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
       childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
       leading: Icon(icon),
       title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-      subtitle: subtitle == null || subtitle.isEmpty ? null : Text(subtitle),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (subtitle != null && subtitle.isNotEmpty) Text(subtitle),
+            _fitmentBadge(section),
+          ],
+        ),
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -1177,8 +1227,25 @@ TextField(
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Text('Oil Spec: ${oil?['oil_spec']?['label']}'),
-                      Text('Capacity: ${oil?['oil_capacity']?['capacity_label_with_filter']}'),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text('Oil Spec: ${oil?['oil_spec']?['label']}'),
+                          _fitmentBadge(oil?['oil_spec']),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text('Capacity: ${oil?['oil_capacity']?['capacity_label_with_filter']}'),
+                          _fitmentBadge(oil?['oil_capacity']),
+                        ],
+                      ),
                       if (oil?['purchase_guidance']?['suggested'] != null)
                         Text(
                           'Buy plan: ${oil?['purchase_guidance']['suggested'].map((s) => "${s['count']}×${s['size_qt']}qt").join(" + ")} '
