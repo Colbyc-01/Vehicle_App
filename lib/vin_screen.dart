@@ -636,7 +636,9 @@ List _sectionItems(dynamic section) {
 
 
 Widget buyButtons(dynamic p) {
-  if (p is! Map) return const SizedBox.shrink();
+  if (p is! Map || !hasMaintenanceContent(p)) {
+    return const SizedBox.shrink();
+  }
 
   final links = (p['buy_links'] is Map)
       ? (p['buy_links'] as Map).cast<String, dynamic>()
@@ -693,6 +695,10 @@ final partContainer = (section is Map)
   final altParts = (partContainer is Map && partContainer['alternatives'] is List)
       ? partContainer['alternatives'] as List
       : const [];
+  final oemPart = oem is Map && hasMaintenanceContent(oem) ? oem : null;
+  final usableAltParts = altParts
+      .where((part) => part is Map && hasMaintenanceContent(part))
+      .toList();
 
 // Spark plug specific variables
 final isSpark = title.toLowerCase().contains('spark');
@@ -767,7 +773,7 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
           if ((entry.value as Map)['alternatives'] is List) ...[
             const SizedBox(height: 8),
             for (final a in ((entry.value as Map)['alternatives'] as List))
-              if (a is Map) ...[
+              if (a is Map && hasMaintenanceContent(a)) ...[
                 Text("• ${partLabel(a.cast<String, dynamic>())}"),
                 const SizedBox(height: 6),
                 Padding(
@@ -827,32 +833,34 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
         ],
 
         // Parts: render with buy links if present
-        if (oem is Map) ...[
+        if (oemPart is Map) ...[
           Text("Primary", style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 6),
-          Text(partLabel(oem.cast<String, dynamic>())),
+          Text(partLabel(oemPart.cast<String, dynamic>())),
           const SizedBox(height: 8),
-          buyButtons(oem.cast<String, dynamic>()),
+          buyButtons(oemPart.cast<String, dynamic>()),
+        ],
 
-          if (altParts.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text("Recommended alternatives",
-                style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 6),
-            for (final a in altParts)
-              if (a is Map) ...[
-                Text("• ${partLabel(a.cast<String, dynamic>())}"),
-                const SizedBox(height: 6),
-                Padding(
-                  padding: const EdgeInsets.only(left: 14),
-                  child: buyButtons(a.cast<String, dynamic>()),
-                ),
-                const SizedBox(height: 8),
-              ],
-          ],
-        ] else if (primary == null) ...[
+        if (usableAltParts.isNotEmpty) ...[
+          if (oemPart is Map) const SizedBox(height: 12),
+          Text("Recommended alternatives",
+              style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 6),
+          for (final a in usableAltParts)
+            if (a is Map) ...[
+              Text("• ${partLabel(a.cast<String, dynamic>())}"),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.only(left: 14),
+                child: buyButtons(a.cast<String, dynamic>()),
+              ),
+              const SizedBox(height: 8),
+            ],
+        ],
+
+        if (oemPart is! Map && usableAltParts.isEmpty && primary == null) ...[
           Text(_emptyCopy),
-        ] else ...[
+        ] else if (oemPart is! Map && usableAltParts.isEmpty) ...[
           Text("Primary", style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 6),
           Text(primary),

@@ -39,14 +39,16 @@ void main() {
   });
 
   test('keeps unverified sections when useful alternatives exist', () {
+    final placeholder = {'brand': 'TBD', 'part_number': 'TBD'};
     final state = maintenanceFitmentState({
       'verified': false,
-      'oem': {'brand': 'TBD', 'part_number': 'TBD'},
+      'oem': placeholder,
       'alternatives': [
         {'brand': 'WIX', 'part_number': 'WA10855'},
       ],
     });
 
+    expect(hasMaintenanceContent(placeholder), isFalse);
     expect(state, MaintenanceFitmentState.verifyFitment);
   });
 
