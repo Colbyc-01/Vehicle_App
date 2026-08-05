@@ -863,7 +863,7 @@ final sparkGap = (isSpark && partContainer is Map && partContainer['spec'] is Ma
         ] else if (oemPart is! Map && usableAltParts.isEmpty) ...[
           Text("Primary", style: Theme.of(context).textTheme.labelLarge),
           const SizedBox(height: 6),
-          Text(primary),
+          Text(primary!),
           if (alts.isNotEmpty) ...[
             const SizedBox(height: 12),
             Text("Recommended alternatives",
